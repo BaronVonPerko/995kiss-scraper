@@ -4,7 +4,7 @@ var request = require('request');
 
 var previousData = {
     song: null,
-    timestamp: null
+    timestamp: new Date('2001-01-01')
 };
 
 function scrape() {
@@ -21,9 +21,10 @@ function scrape() {
             
             var artist = data.artist;
             var song = data.title;
-            var timestamp = data.timestamp_iso;
+            var timestamp = new Date(data.timestamp_iso);
 
             if(song !== previousData.song && timestamp > previousData.timestamp) {
+                // console.log(body.results);
                 console.log(timestamp + ' | ' + artist + ' | ' + song);
 
                 previousData = {
