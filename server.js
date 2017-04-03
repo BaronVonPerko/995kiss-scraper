@@ -1,5 +1,22 @@
 var fs = require('fs');
 var request = require('request');
+var mongoose = require('mongoose');
+var Schema = mongoose.Schema;
+
+var dbConnected = false;
+
+mongoose.connect('mongodb://127.0.0.1:27017/kiss995scraper', function(err, db) {
+    if(!err) {
+        console.log("Database connection successful.");
+        dbConnected = true;
+    }
+});
+
+var Song = mongoose.model('Song', new Schema( {
+    song: String,
+    artist: String,
+    timestamp: String
+}));
 
 
 var previousData = {
@@ -27,6 +44,13 @@ function scrape() {
                 // console.log(body.results);
                 console.log(timestamp + ' | ' + artist + ' | ' + song);
 
+                var song = new Song({
+                    song: song,
+                    artist: artist,
+                    timestamp: timestamp
+                });
+                song.save();
+
                 previousData = {
                     song: song,
                     timestamp: timestamp
@@ -39,7 +63,7 @@ function scrape() {
 
 
 setInterval(function() {
-    scrape();
+    if(dbConnected) {
+        scrape();
+    }
 }, 10000);
-
-scrape();
