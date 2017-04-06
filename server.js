@@ -5,7 +5,12 @@ var Schema = mongoose.Schema;
 
 var dbConnected = false;
 
-mongoose.connect('mongodb://127.0.0.1:27017/kiss995scraper', function(err, db) {
+var envModule = require('./env');
+var env = envModule.env();
+
+var connectionString = 'mongodb://' + env.user + ':' + env.password + '@' + env.database;
+
+mongoose.connect(connectionString, function(err, db) {
     if(!err) {
         console.log("Database connection successful.");
         dbConnected = true;
